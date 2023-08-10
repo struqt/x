@@ -1,4 +1,4 @@
-module github.com/struqt/x/logging
+module github.com/struqt/x
 
 go 1.20
 
