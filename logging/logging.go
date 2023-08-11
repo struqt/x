@@ -17,8 +17,8 @@ var setupOnce sync.Once
 func setup() {
 	setupOnce.Do(func() {
 		zerologr.NameSeparator = "/"
-		zerologr.NameFieldName = "n"
-		zerologr.VerbosityFieldName = "v"
+		zerologr.NameFieldName = "N"
+		zerologr.VerbosityFieldName = "V"
 		zerologr.SetMaxV(LogVerbosity)
 	})
 }
@@ -31,9 +31,14 @@ var (
 )
 
 func NewLogger(path string) logr.Logger {
-	verbose := NewLumberjack(LogRotateMBytes, LogRotateFiles, path)
 	console := NewThresholdConsole()
-	logger := NewZerolog(verbose, console)
+	var logger *zerolog.Logger
+	if len(path) == 0 {
+		logger = NewZerolog(console)
+	} else {
+		verbose := NewLumberjack(LogRotateMBytes, LogRotateFiles, path)
+		logger = NewZerolog(verbose, console)
+	}
 	setup()
 	return zerologr.New(logger)
 }

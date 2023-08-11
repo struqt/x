@@ -2,7 +2,9 @@ module examples/logging
 
 go 1.20
 
-require github.com/struqt/x v0.0.0-00010101000000-000000000000
+replace github.com/struqt/x v0.0.0 => ../../
+
+require github.com/struqt/x v0.0.0
 
 require (
 	github.com/go-logr/logr v1.2.4 // indirect
@@ -13,5 +15,3 @@ require (
 	golang.org/x/sys v0.11.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )
-
-replace github.com/struqt/x => ../../
