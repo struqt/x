@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"time"
 
+	"github.com/struqt/x/logging"
 	"github.com/struqt/x/mq/amqp"
 )
 
@@ -16,14 +16,18 @@ var (
 
 func init() {
 	flag.Parse()
+	logging.LogVerbosity = 127
+	logging.LogConsoleThreshold = -128
 }
 
 func main() {
+	log := logging.NewLogger("").WithName("amqp-produce")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
+	amqp.SetLogger(log)
 	consumer := amqp.NewConsumer(*queue, *url)
 	consumer.RunWith(ctx, func(message []byte) bool {
-		log.Printf("Received a message: %s", string(message))
+		log.Info(string(message))
 		return true
 	})
 }

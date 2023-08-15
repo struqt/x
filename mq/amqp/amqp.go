@@ -2,18 +2,36 @@ package amqp
 
 import (
 	"context"
-	"log"
+	"fmt"
+	"sync"
 	"time"
 
 	rabbit "github.com/rabbitmq/amqp091-go"
+	"github.com/struqt/x/logging"
 	"github.com/struqt/x/mq"
 )
 
+var log logging.Logger
 var retryDelays = []int{1, 4, 9, 16}
+
+var setupOnce sync.Once
+
+func setup() {
+	setupOnce.Do(func() {
+		if log.IsZero() {
+			log = logging.NewLogger("").WithName("AMQP")
+		}
+	})
+}
+
+func SetLogger(logger logging.Logger) {
+	log = logger
+}
 
 func Reconnect(name, url string) (*rabbit.Channel, *rabbit.Connection) {
 	retryIndex := 0
 	for {
+		uri, _ := rabbit.ParseURI(url)
 		conn, err := rabbit.Dial(url)
 		if err == nil {
 			ch, err := conn.Channel()
@@ -29,33 +47,37 @@ func Reconnect(name, url string) (*rabbit.Channel, *rabbit.Connection) {
 				if err == nil {
 					err = ch.Confirm(false)
 					if err == nil {
-						log.Printf("Successfully connected to <%s %s>.\n", name, url)
+						log.Info("Connected.", "host", uri.Host, "port", uri.Port, "queue", name)
 						return ch, conn
 					} else {
-						log.Println(err)
+						log.Error(err, "Error on ch.Confirm(..)")
 					}
 				} else {
-					log.Println(err)
+					log.Error(err, "Error on ch.QueueDeclare(..)")
 				}
 				if err = ch.Close(); err != nil {
-					log.Println(err)
+					log.Error(err, "Error on ch.Close()")
 				}
 			} else {
-				log.Println(err)
+				log.Error(err, "Error on conn.Channel()")
 			}
 			if err = conn.Close(); err != nil {
-				log.Println(err)
+				log.Error(err, "Error on conn.Close()")
 			}
 		} else {
-			log.Println(err)
+			log.Error(err, "Error on rabbit.Dial(..)")
 		}
-		log.Printf("Failed to connect to <%s %s>, retrying in %d seconds...\n", name, url, retryDelays[retryIndex])
+		log.Info(
+			fmt.Sprintf("Failed to connect, retrying in %d seconds ...", retryDelays[retryIndex]),
+			"host", uri.Host, "port", uri.Port, "queue", name,
+		)
 		time.Sleep(time.Duration(retryDelays[retryIndex]) * time.Second)
 		retryIndex = (retryIndex + 1) % len(retryDelays)
 	}
 }
 
 func NewConsumer(queue, url string) mq.Consumer {
+	setup()
 	return &consumer{
 		queue:      queue,
 		url:        url,
@@ -65,6 +87,7 @@ func NewConsumer(queue, url string) mq.Consumer {
 }
 
 func NewProducer(queue, url string, backlog int) mq.Producer {
+	setup()
 	var channel chan []byte
 	if backlog <= 0 {
 		channel = make(chan []byte)
@@ -96,17 +119,17 @@ func (c *consumer) RunWith(ctx context.Context, consume mq.Consume) {
 		}
 		if nil != c.channel && !c.channel.IsClosed() {
 			if err := c.channel.Close(); err != nil {
-				log.Println(err)
+				log.Error(err, "Error on c.channel.Close()")
 			}
 			c.channel = nil
 		}
 		if nil != c.connection && !c.connection.IsClosed() {
 			if err := c.connection.Close(); err != nil {
-				log.Println(err)
+				log.Error(err, "Error on c.connection.Close()")
 			}
 			c.connection = nil
 		}
-		log.Printf("Start connecting ...")
+		log.Info("Start connecting ...")
 		ch, conn := Reconnect(c.queue, c.url)
 		c.channel = ch
 		c.connection = conn
@@ -120,11 +143,11 @@ func (c *consumer) RunWith(ctx context.Context, consume mq.Consume) {
 			nil,     // Consumer tag
 		)
 		if err != nil {
-			log.Println(err)
-			log.Printf("Failed to register a consumer, retrying ...")
+			log.Error(err, "Error on c.channel.Consume(..)")
+			log.Info("Failed to register a consumer, retrying ...")
 			continue
 		}
-		log.Printf("Start message receiving ...")
+		log.Info("Start message receiving ...")
 	loopMessage:
 		for {
 			select {
@@ -138,7 +161,7 @@ func (c *consumer) RunWith(ctx context.Context, consume mq.Consume) {
 				}
 			}
 		}
-		log.Printf("Finish message receiving")
+		log.Info("Finish message receiving.")
 	}
 }
 
@@ -175,7 +198,7 @@ func (p *producer) RunWith(ctx context.Context) {
 		case message = <-p.backlog:
 			continue
 		case <-ctx.Done():
-			log.Printf("Producer <%s %s> is stopping...\n", p.queue, p.url)
+			log.Info("Producer is stopping ...", "queue", p.queue)
 			return
 		}
 	}
@@ -203,16 +226,16 @@ func (p *producer) publish(message []byte, maxRetry int) bool {
 		if err != nil {
 			p.channel = nil
 			p.connection = nil
-			log.Println(err)
-			log.Printf("Failed to publish a message, retrying...(%d/%d)\n", i+1, maxRetry)
+			log.Error(err, "Error on p.channel.PublishWithDeferredConfirmWithContext(..)")
+			log.Info(fmt.Sprintf("Failed to publish a message, retrying ... (%d/%d)", i+1, maxRetry))
 			continue
 		}
 		if confirm != nil {
 			if confirm.Wait() {
-				log.Printf("Message acked by server - %d\n", confirm.DeliveryTag)
+				log.V(1).Info(fmt.Sprintf("Message acked by server - %d", confirm.DeliveryTag))
 				return true
 			} else {
-				log.Printf("Message nacked by server, retrying...(%d/%d)\n", i+1, maxRetry)
+				log.V(1).Info(fmt.Sprintf("Message nacked by server, retrying ... (%d/%d)", i+1, maxRetry))
 				time.Sleep(1 * time.Second) // wait for a while before retrying
 			}
 		}

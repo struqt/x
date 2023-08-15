@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"sync"
 	"time"
 
+	"github.com/struqt/x/logging"
 	"github.com/struqt/x/mq"
 	"github.com/struqt/x/mq/amqp"
 )
@@ -16,8 +16,13 @@ var (
 	url   = flag.String("url", "amqp://user:12345@127.0.0.1:5672", "URL of an AMQP server")
 )
 
+var log logging.Logger
+
 func init() {
 	flag.Parse()
+	logging.LogVerbosity = 127
+	logging.LogConsoleThreshold = -128
+	log = logging.NewLogger("").WithName("amqp-produce")
 }
 
 func main() {
@@ -26,6 +31,7 @@ func main() {
 	defer cancel()
 	var wg sync.WaitGroup
 	wg.Add(2)
+	amqp.SetLogger(log)
 	producer := amqp.NewProducer(*queue, *url, 5)
 	go sendEvery2Sec(ctx, &wg, producer)
 	go func() {
@@ -33,7 +39,7 @@ func main() {
 		producer.RunWith(ctx)
 	}()
 	wg.Wait()
-	log.Println("Demo is ending ...")
+	log.Info("Demo is ending ...")
 }
 
 func sendEvery2Sec(ctx context.Context, wg *sync.WaitGroup, producer mq.Producer) {
@@ -46,10 +52,10 @@ func sendEvery2Sec(ctx context.Context, wg *sync.WaitGroup, producer mq.Producer
 			go func() {
 				message := "Hello World --- " + time.Now().String()
 				producer.SendString(message)
-				log.Printf("Message output: %s\n", message)
+				log.Info(message)
 			}()
 		case <-ctx.Done():
-			log.Println("Demo Ticker is stopping --")
+			log.Info("Demo Ticker is stopping --")
 			return
 		}
 	}

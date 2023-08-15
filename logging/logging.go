@@ -12,6 +12,8 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+type Logger = logr.Logger
+
 var setupOnce sync.Once
 
 func setup() {
@@ -31,15 +33,15 @@ var (
 )
 
 func NewLogger(path string) logr.Logger {
+	setup()
 	console := NewThresholdConsole()
 	var logger *zerolog.Logger
-	if len(path) == 0 {
-		logger = NewZerolog(console)
-	} else {
+	if len(path) > 0 {
 		verbose := NewLumberjack(LogRotateMBytes, LogRotateFiles, path)
 		logger = NewZerolog(verbose, console)
+	} else {
+		logger = NewZerolog(console)
 	}
-	setup()
 	return zerologr.New(logger)
 }
 
