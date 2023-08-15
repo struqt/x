@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/go-logr/logr v1.2.4
 	github.com/go-logr/zerologr v1.2.3
+	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/rs/zerolog v1.30.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
