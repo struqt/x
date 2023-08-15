@@ -1,5 +1,11 @@
 ---
+vault: &abc
+  token: $VAULT_TOKEN
+  path: $VAULT_PATH
+  address: $VAULT_ADDRESS
+
 type: yml
+
 parent1:
   name: parent1
   id: 1234
@@ -37,10 +43,12 @@ parent1:
     ok1: true
     ok2: true
     ok3_not: false
+
 parent2:
   name: parent2
   id: 5678
   child2:
+    <<: *abc
     name: child2
     grandchild2:
       ids:
@@ -49,29 +57,38 @@ parent2:
         - 6
       "on": true
     empty: { }
+
 booleans:
   - true
   - false
   - true
+
 int_booleans:
   - 1
   - 0
   - 1
+
 str_booleans:
   - "1"
   - t
   - f
+
 str_bool: "1"
 time: "2019-01-01"
 duration: "3s"
 negative_int: -1234
+
 orphan:
   - red
   - blue
   - orange
+
 empty: { }
 
 
 ---
+vault:
+  <<: *abc
 type: yaml
 empty: { }
+
