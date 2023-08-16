@@ -6,6 +6,17 @@
 version: 2
 updates:
   - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
+    directory: "/"
+    schedule: { interval: "weekly" }
+
+  - package-ecosystem: "gomod"
+    directory: "/examples/config"
+    schedule: { interval: "weekly" }
+
+  - package-ecosystem: "gomod"
+    directory: "/examples/logging"
+    schedule: { interval: "weekly" }
+
+  - package-ecosystem: "gomod"
+    directory: "/examples/mq"
+    schedule: { interval: "weekly" }
