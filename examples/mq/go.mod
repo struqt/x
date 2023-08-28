@@ -2,9 +2,9 @@ module examples/mq
 
 go 1.20
 
-require github.com/struqt/x v0.0.0
+require github.com/struqt/x v0.1.3
 
-replace github.com/struqt/x v0.0.0 => ../../
+replace github.com/struqt/x => ../../
 
 require (
 	github.com/go-logr/logr v1.2.4 // indirect

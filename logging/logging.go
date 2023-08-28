@@ -28,8 +28,8 @@ func setup() {
 var (
 	LogRotateMBytes     uint16 = 16
 	LogRotateFiles      uint16 = 64
-	LogVerbosity               = 0
-	LogConsoleThreshold        = int8(zerolog.ErrorLevel)
+	LogVerbosity               = 2
+	LogConsoleThreshold        = int8(zerolog.TraceLevel)
 )
 
 func NewLogger(path string) logr.Logger {

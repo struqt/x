@@ -2,6 +2,10 @@ module examples/config
 
 go 1.20
 
+require github.com/struqt/x v0.1.3
+
+replace github.com/struqt/x v0.0.0 => ../../
+
 require (
 	github.com/knadh/koanf/parsers/toml v0.1.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
@@ -44,7 +48,3 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-require github.com/struqt/x v0.0.0
-
-replace github.com/struqt/x v0.0.0 => ../../
