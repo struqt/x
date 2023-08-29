@@ -2,9 +2,9 @@ module examples/config
 
 go 1.20
 
-require github.com/struqt/x v0.2.0
+require github.com/struqt/x v0.3.1
 
-replace github.com/struqt/x v0.0.0 => ../../
+replace github.com/struqt/x => ../../
 
 require (
 	github.com/knadh/koanf/parsers/toml v0.1.0
