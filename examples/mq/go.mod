@@ -2,7 +2,7 @@ module examples/mq
 
 go 1.20
 
-require github.com/struqt/x v0.1.3
+require github.com/struqt/x v0.2.0
 
 replace github.com/struqt/x => ../../
 
