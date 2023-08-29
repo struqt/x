@@ -4,6 +4,7 @@ version: "3.7"
 networks: { proxy: { external: true, name: proxy } }
 
 services:
+
   example-postgres:
     container_name: example-postgres
     hostname: postgres
@@ -14,8 +15,8 @@ services:
     logging: { driver: local, options: { max-size: 32m, max-file: 16 } }
     tmpfs: [ /tmp ]
     volumes:
-      - "postgres/run:/var/run/postgresql"
-      - "postgres/data:/var/lib/postgresql/data"
+      - "./postgres/run:/var/run/postgresql"
+      - "./postgres/data:/var/lib/postgresql/data"
     environment:
       - "POSTGRES_DB=example"
       - "POSTGRES_USER=example"
@@ -24,4 +25,28 @@ services:
       - "5432:5432"
     networks: { proxy: { } }
   # example-postgres ##########################################################
+
+  example-mysql:
+    container_name: example-mysql
+    hostname: mysql
+    image: mysql:5.7.42-debian
+    restart: unless-stopped
+    user: root
+    read_only: true
+    #logging: { driver: local, options: { max-size: 32m, max-file: 16 } }
+    tmpfs: [ /tmp ]
+    volumes:
+      - "./mysql/run:/var/run/mysqld"
+      - "./mysql/data:/var/lib/mysql"
+    environment:
+      - "TZ=UTC"
+      - "MYSQL_RANDOM_ROOT_PASSWORD"
+      - "MYSQL_DATABASE=example"
+      - "MYSQL_USER=example"
+      - "MYSQL_PASSWORD=Example#123789"
+    ports:
+      - "3306:3306"
+    networks: { proxy: { } }
+  # example-mysql #############################################################
+
 # services

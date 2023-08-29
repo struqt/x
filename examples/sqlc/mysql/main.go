@@ -9,11 +9,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/struqt/x/logging"
 	"github.com/struqt/x/txn"
 
-	"examples/sqlc/pg/tutorial"
+	"examples/sqlc/mysql/tutorial"
 )
 
 var log = logging.NewLogger("")
@@ -36,15 +36,16 @@ func main() {
 }
 
 func tick(ctx context.Context, ticker *time.Ticker) {
-	dsn := fmt.Sprintf("sslmode=disable dbname=example host=%s user=example password=%s",
-		os.Getenv("DB_HOST"), os.Getenv("DB_PASSWORD"))
-	db, err := sql.Open("postgres", dsn)
+	// <username>:<pw>@tcp(<HOST>:<port>)/<dbname>
+	dsn := fmt.Sprintf("example:%s@tcp(%s)/example", os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"))
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Error(err, "")
 		return
 	}
 	defer func() {
 		_ = db.Close()
+		log.Info("Connection pool is closed")
 	}()
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(1)
@@ -63,7 +64,7 @@ func tick(ctx context.Context, ticker *time.Ticker) {
 			return
 		case <-ticker.C:
 			count.Add(1)
-			if count.Load() >= 3 {
+			if count.Load() > 3 {
 				return
 			}
 			go func() {
