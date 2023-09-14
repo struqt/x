@@ -22,3 +22,7 @@ go.work.sum
 
 .go/*
 bin/*
+
+.idea/*
+build/*
+examples/build/*

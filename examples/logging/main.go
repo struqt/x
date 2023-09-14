@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/struqt/x/logging"
+	"github.com/struqt/logging"
 	"time"
 )
 

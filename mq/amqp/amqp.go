@@ -7,7 +7,7 @@ import (
 	"time"
 
 	rabbit "github.com/rabbitmq/amqp091-go"
-	"github.com/struqt/x/logging"
+	"github.com/struqt/logging"
 	"github.com/struqt/x/mq"
 )
 

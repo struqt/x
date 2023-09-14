@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/struqt/x/logging"
+	"github.com/struqt/logging"
 	"github.com/struqt/x/mq"
 	"github.com/struqt/x/mq/amqp"
 )

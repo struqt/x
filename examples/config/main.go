@@ -9,7 +9,7 @@ import (
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/vault"
 	"github.com/knadh/koanf/v2"
-	"github.com/struqt/x/logging"
+	"github.com/struqt/logging"
 )
 
 func main() {

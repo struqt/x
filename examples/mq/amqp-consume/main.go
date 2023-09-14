@@ -5,7 +5,7 @@ import (
 	"flag"
 	"time"
 
-	"github.com/struqt/x/logging"
+	"github.com/struqt/logging"
 	"github.com/struqt/x/mq/amqp"
 )
 
