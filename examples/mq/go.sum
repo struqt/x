@@ -29,8 +29,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/struqt/logging v0.0.1 h1:ju0yvpF7Cwy04iLwBtGtKGwB1a3waNjEk2qjRaoWgGk=
 github.com/struqt/logging v0.0.1/go.mod h1:f/YPG5tdUiUux+7R8/wCzeCx1AvrdSAnh98AjXyb2XI=
-github.com/struqt/x v0.3.1 h1:Z5CMPAQzyu9797pQIXVrdNVFmRSCi8L5mpQpZOmOlUY=
-github.com/struqt/x v0.3.1/go.mod h1:B7Zb06Lu959SWwJCS7LZ4peiGRANghqN20qc/ZAXPsY=
+github.com/struqt/x v0.3.2 h1:xsSpzqXUWCQVBQl7zUCrgYkeKICaWhxGjNbU3Sgy9gc=
+github.com/struqt/x v0.3.2/go.mod h1:6R/b/2RqQglVjKXKF3XFdQ+GGwIFpOL1PZWn4NQ2GNs=
 go.uber.org/goleak v1.2.1 h1:NBol2c7O1ZokfZ0LEU9K6Whx/KnwvepVetCUhtKja4A=
 go.uber.org/goleak v1.2.1/go.mod h1:qlT2yGI9QafXHhZZLxlSuNsMw3FFLxBr+tBRlmO1xH4=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
