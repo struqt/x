@@ -33,3 +33,5 @@ build_release logging
 build_release config
 build_release mq/amqp-consume
 build_release mq/amqp-produce
+build_release jwe
+build_release argon2

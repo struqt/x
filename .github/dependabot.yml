@@ -3,21 +3,25 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    schedule: { interval: "weekly" }
+    schedule: { interval: "daily" }
     directory: "/"
 
   - package-ecosystem: "gomod"
     schedule: { interval: "weekly" }
-    directory: "/examples/config"
+    directory: "/examples/daily"
 
   - package-ecosystem: "gomod"
     schedule: { interval: "weekly" }
-    directory: "/examples/logging"
+    directory: "/examples/daily"
 
   - package-ecosystem: "gomod"
-    schedule: { interval: "weekly" }
+    schedule: { interval: "daily" }
     directory: "/examples/mq"
 
   - package-ecosystem: "gomod"
-    schedule: { interval: "weekly" }
+    schedule: { interval: "daily" }
     directory: "/examples/jwe"
+
+  - package-ecosystem: "gomod"
+    schedule: { interval: "daily" }
+    directory: "/examples/argon2"
