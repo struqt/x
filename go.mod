@@ -3,7 +3,7 @@ module github.com/struqt/x
 go 1.20
 
 require (
-	github.com/rabbitmq/amqp091-go v1.8.1
+	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/struqt/logging v0.0.1
 )
 
